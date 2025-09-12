@@ -8,10 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 600  # fat image => long build/push possible
+    timeout-minutes: 600   # fat image -> long build/push possible
     permissions:
       contents: read
-      packages: write   # required to push to GHCR
+      packages: write      # required to push to GHCR
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository_owner }}/qwen-edit
@@ -30,13 +30,13 @@ jobs:
           docker system prune -af || true
           df -h
 
-      # (Optional) QEMU — we still build only amd64, but this primes buildx nicely
+      # Optional: QEMU (we still build only amd64; this just keeps buildx happy)
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64
 
-      # IMPORTANT: use buildx with the docker-container driver (enables GHA cache)
+      # IMPORTANT: buildx with docker-container driver (enables GHA cache)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -65,7 +65,8 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Show image digest
-        run: echo "Pushed digest: ${{ steps.build.outputs.digest }}"
+        run: |
+          echo "Pushed digest: ${{ steps.build.outputs.digest }}"
 
       - name: Disk usage after build
         run: df -h

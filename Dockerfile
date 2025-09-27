@@ -22,15 +22,6 @@ RUN python3 -m pip install --upgrade pip && \
       "git+https://github.com/huggingface/transformers.git@main"
 
 # -------------------------
-# Model baked into image
-# -------------------------
-RUN mkdir -p /opt/models && \
-    git clone https://huggingface.co/Qwen/Qwen-Image-Edit /opt/models/Qwen-Image-Edit && \
-    cd /opt/models/Qwen-Image-Edit && git lfs pull
-
-ENV MODEL_ID=/opt/models/Qwen-Image-Edit
-
-# -------------------------
 # App code (bundled into image)
 # -------------------------
 WORKDIR /app
@@ -64,3 +55,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD curl -fsS http://127.0.0.1:8080/api/healthz || exit 1
 
 CMD ["/bin/bash", "/app/run.sh", "start"]
+

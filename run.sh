@@ -5,6 +5,11 @@ set -euo pipefail
 APP_DIR="${APP_DIR:-/app}"
 
 # model baked into image:
+mkdir -p /opt/models 
+git clone https://huggingface.co/Qwen/Qwen-Image-Edit /opt/models/Qwen-Image-Edit 
+cd /opt/models/Qwen-Image-Edit && git lfs pull
+
+export MODEL_ID=/opt/models/Qwen-Image-Edit
 MODEL_ID="${MODEL_ID:-/opt/models/Qwen-Image-Edit}"
 
 # app data (kept inside the container; you can mount if you want persistence)
@@ -159,3 +164,4 @@ case "${1:-start}" in
     exit 1
     ;;
 esac
+

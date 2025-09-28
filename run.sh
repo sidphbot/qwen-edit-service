@@ -4,13 +4,27 @@ set -euo pipefail
 # ------------ runtime config (overridable via env) ------------
 APP_DIR="${APP_DIR:-/app}"
 
-# model baked into image:
-mkdir -p /opt/models 
-git clone https://huggingface.co/Qwen/Qwen-Image-Edit /opt/models/Qwen-Image-Edit 
-cd /opt/models/Qwen-Image-Edit && git lfs pull
+# Ensure base directory exists
+mkdir -p /workspace/models
 
-export MODEL_ID=/opt/models/Qwen-Image-Edit
-MODEL_ID="${MODEL_ID:-/opt/models/Qwen-Image-Edit}"
+# Clone only if repo directory does not exist
+if [ ! -d "/workspace/models/Qwen-Image-Edit/.git" ]; then
+    git clone https://huggingface.co/Qwen/Qwen-Image-Edit /workspace/models/Qwen-Image-Edit
+fi
+
+# Move into repo dir
+cd /workspace/models/Qwen-Image-Edit
+
+# Make sure LFS is available; only pull if needed
+if command -v git-lfs &> /dev/null; then
+    git lfs pull
+else
+    echo "Warning: git-lfs not installed, skipping LFS pull"
+fi
+
+# Export MODEL_ID (idempotent)
+export MODEL_ID="/workspace/models/Qwen-Image-Edit"
+MODEL_ID="${MODEL_ID:-/workspace/models/Qwen-Image-Edit}"
 
 # app data (kept inside the container; you can mount if you want persistence)
 OUTPUT_DIR="${OUTPUT_DIR:-/app/outputs}"
@@ -164,4 +178,5 @@ case "${1:-start}" in
     exit 1
     ;;
 esac
+
 

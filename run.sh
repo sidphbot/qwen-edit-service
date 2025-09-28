@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
 
 # ------------ runtime config (overridable via env) ------------
 APP_DIR="${APP_DIR:-/app}"
@@ -178,5 +178,6 @@ case "${1:-start}" in
     exit 1
     ;;
 esac
+
 
 

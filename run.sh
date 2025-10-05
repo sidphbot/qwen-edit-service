@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-set -e
-
+#!/usr/bin/bash
 # ------------ runtime config (overridable via env) ------------
 APP_DIR="${APP_DIR:-/app}"
 
@@ -178,6 +176,7 @@ case "${1:-start}" in
     exit 1
     ;;
 esac
+
 
 
 

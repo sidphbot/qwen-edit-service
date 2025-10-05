@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # System deps: nginx binary, git-lfs, curl, htpasswd
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      nginx apache2-utils git git-lfs ca-certificates curl procps lsof \
+      vim nginx apache2-utils git git-lfs ca-certificates curl procps lsof \
     && rm -rf /var/lib/apt/lists/* \
     && git lfs install
 
@@ -51,6 +51,7 @@ ENV APP_DIR=/app \
 
 EXPOSE 8080
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD curl -fsS http://127.0.0.1:8080/api/healthz || exit 1
 
-
+CMD ["bash", "/app/run.sh", "start"]
